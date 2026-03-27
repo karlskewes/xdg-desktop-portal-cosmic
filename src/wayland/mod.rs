@@ -269,7 +269,13 @@ impl WaylandHelper {
 
         thread::spawn(move || {
             loop {
-                event_queue.blocking_dispatch(&mut data).unwrap();
+                match event_queue.blocking_dispatch(&mut data) {
+                    Ok(_) => {}
+                    Err(error) => {
+                        log::debug!("Wayland dispatch: {error}");
+                        break;
+                    }
+                }
             }
         });
 
